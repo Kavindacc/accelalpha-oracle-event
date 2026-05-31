@@ -15,8 +15,16 @@ export function Register() {
   const [data, setData] = useState({ name: "", email: "", focus: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [response, setResponse] = useState<{
+    visitor_name: string;
+    visitor_email: string;
+    matched_session: string;
+    email_body: string;
+    timestamp: string;
+  } | null>(null);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const result = schema.safeParse(data);
     if (!result.success) {
@@ -26,8 +34,35 @@ export function Register() {
       return;
     }
     setErrors({});
-    setDone(true);
-    toast.success("Seat reserved", { description: "We'll be in touch within 48 hours." });
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("https://accelalpha-oracle-event.onrender.com/api/v1/generate-invitation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          professional_focus: data.focus,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Failed to generate invitation");
+      }
+
+      const responseData = await res.json();
+      setResponse(responseData);
+      setDone(true);
+      toast.success("Invitation generated", { description: "We've matched your interests to the agenda!" });
+    } catch (err: any) {
+      toast.error("Registration failed", { description: err.message || "Something went wrong." });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -62,7 +97,7 @@ export function Register() {
             Your seat at the <em className="text-coral not-italic font-bold">captain&apos;s table</em>.
           </h2>
           <p className="mt-8 text-white/70 text-lg leading-relaxed">
-            Seating is limited and curated by the Accelalpha team. Tell us about your professional focus and we'll confirm within 48 hours.
+            Seating is limited and curated by the Accelalpha team. Tell us about your professional focus and our system will match you to our elite GCC schedule.
           </p>
           <div className="mt-10 space-y-4 text-sm">
             {[
@@ -89,18 +124,59 @@ export function Register() {
           {/* Gradient border accent */}
           <div className="absolute -top-px left-12 right-12 h-px bg-linear-to-r from-transparent via-coral to-transparent" />
 
-          {done ? (
-            <div className="py-16 text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", bounce: 0.5 }}
-                className="mx-auto size-20 rounded-full bg-coral-gradient flex items-center justify-center text-coral-foreground shadow-glow"
-              >
-                <Check className="size-9" />
-              </motion.div>
-              <h3 className="mt-6 font-display font-semibold text-4xl">Anchor dropped.</h3>
-              <p className="mt-3 text-white/70">We've received your request. Look out for a confirmation in your inbox.</p>
+          {done && response ? (
+            <div className="space-y-6">
+              <div className="text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", bounce: 0.5 }}
+                  className="mx-auto size-16 rounded-full bg-coral-gradient flex items-center justify-center text-coral-foreground shadow-glow"
+                >
+                  <Check className="size-8" />
+                </motion.div>
+                <h3 className="mt-4 font-display font-semibold text-3xl text-white">Anchor dropped.</h3>
+                <p className="mt-2 text-zinc-300 text-sm">We've matched your professional focus to the agenda!</p>
+              </div>
+
+              {/* Matched Session Info Panel */}
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-2 text-left">
+                <span className="text-[9px] uppercase tracking-widest text-coral font-bold bg-coral/10 border border-coral/20 px-2 py-0.5 rounded-md">
+                  Matched Session
+                </span>
+                <h4 className="text-sm font-semibold text-white pt-1">
+                  {response.matched_session}
+                </h4>
+                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  Based on your interest, this session has been highlighted for your GCC supply chain dashboard.
+                </p>
+              </div>
+
+              {/* Generated Email Draft */}
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3 text-left">
+                <div className="flex justify-between items-center">
+                  <span className="text-[9px] uppercase tracking-widest text-zinc-400 font-bold">
+                    AI-Drafted Invitation
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(response.email_body);
+                      toast.success("Copied to clipboard", { description: "Email draft copied successfully!" });
+                    }}
+                    className="text-[10px] text-coral hover:text-white transition-colors cursor-pointer bg-coral/5 hover:bg-coral/10 px-2.5 py-1 rounded-md border border-coral/20 font-medium"
+                  >
+                    Copy Draft
+                  </button>
+                </div>
+                <div className="bg-zinc-950/60 rounded-xl p-3.5 border border-white/5 font-mono text-[10px] text-zinc-300 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed scrollbar-thin">
+                  {response.email_body}
+                </div>
+              </div>
+
+              <p className="text-center text-xs text-zinc-500">
+                Invitation request logged at: {new Date(response.timestamp).toLocaleTimeString()}
+              </p>
             </div>
           ) : (
             <>
@@ -114,7 +190,8 @@ export function Register() {
                     value={data.name}
                     onChange={e => setData({ ...data, name: e.target.value })}
                     maxLength={100}
-                    className="w-full bg-transparent border-0 border-b border-white/20 focus:border-coral outline-none py-2.5 text-lg text-white placeholder:text-white/30 transition-colors"
+                    disabled={submitting}
+                    className="w-full bg-transparent border-0 border-b border-white/20 focus:border-coral outline-none py-2.5 text-lg text-white placeholder:text-white/30 transition-colors disabled:opacity-50"
                     placeholder="Jane Navigator"
                   />
                 </Field>
@@ -124,7 +201,8 @@ export function Register() {
                     value={data.email}
                     onChange={e => setData({ ...data, email: e.target.value })}
                     maxLength={255}
-                    className="w-full bg-transparent border-0 border-b border-white/20 focus:border-coral outline-none py-2.5 text-lg text-white placeholder:text-white/30 transition-colors"
+                    disabled={submitting}
+                    className="w-full bg-transparent border-0 border-b border-white/20 focus:border-coral outline-none py-2.5 text-lg text-white placeholder:text-white/30 transition-colors disabled:opacity-50"
                     placeholder="jane@company.com"
                   />
                 </Field>
@@ -134,7 +212,8 @@ export function Register() {
                     onChange={e => setData({ ...data, focus: e.target.value })}
                     maxLength={1000}
                     rows={4}
-                    className="w-full bg-transparent border-0 border-b border-white/20 focus:border-coral outline-none py-2.5 resize-none text-white placeholder:text-white/30 transition-colors"
+                    disabled={submitting}
+                    className="w-full bg-transparent border-0 border-b border-white/20 focus:border-coral outline-none py-2.5 resize-none text-white placeholder:text-white/30 transition-colors disabled:opacity-50"
                     placeholder="VP of Supply Chain. Currently rebuilding our forecasting stack and exploring AI for last-mile..."
                   />
                   <div className="mt-1 text-right text-[10px] uppercase tracking-widest text-white/40">
@@ -144,9 +223,17 @@ export function Register() {
               </div>
               <button
                 type="submit"
-                className="mt-8 w-full py-4 rounded-full bg-coral-gradient text-coral-foreground font-medium shadow-glow hover:scale-[1.02] transition-transform"
+                disabled={submitting}
+                className="mt-8 w-full py-4 rounded-full bg-coral-gradient text-coral-foreground font-semibold shadow-glow hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 cursor-pointer"
               >
-                Send request →
+                {submitting ? (
+                  <>
+                    <span className="size-4 rounded-full border-2 border-coral-foreground border-t-transparent animate-spin" />
+                    Customizing Agenda...
+                  </>
+                ) : (
+                  "Send request →"
+                )}
               </button>
               <p className="mt-4 text-center text-xs text-white/40">
                 We respond within 48 hours. No marketing list, ever.
