@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { Cpu, Trophy, Leaf } from "lucide-react";
 import reason1 from "@/assets/reason-1.png";
 import reason2 from "@/assets/reason-2.png";

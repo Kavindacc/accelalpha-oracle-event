@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/lib/theme";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import logoWhite from "@/assets/logo-white.png";
 import logoBlack from "@/assets/logo-black.png";
 import logoOracle from "@/assets/logo with oracle.png";

@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
