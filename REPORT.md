@@ -11,7 +11,7 @@ This repository hosts a state-of-the-art, fully responsive corporate event platf
 - **Live Running Backend API (Render)**:
   [https://accelalpha-oracle-event.onrender.com](https://accelalpha-oracle-event.onrender.com)
 - **Generate Invitation Endpoint (RAG POST)**:
-  [https://accelalpha-oracle-event.onrender.com/api/v1/generate-invitation](https://accelalpha-oracle-event.onrender.com/api/v1/generate-invitation)
+  [https://accelalpha-oracle-event.onrender.com](https://accelalpha-oracle-event.onrender.com/api/v1/generate-invitation)
 
 ---
 
