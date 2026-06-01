@@ -7,11 +7,11 @@ This repository hosts a state-of-the-art, fully responsive corporate event platf
 ## Live Gateways (Hosted URLs)
 
 - **Live Frontend Interface (Vercel)**:
-  [https://accelalpha-oracle-event-frontend.vercel.app/](https://accelalpha-oracle-event.vercel.app) _(Note: If Vercel generated a unique project name like `accelalpha-oracle-event-web.vercel.app` upon deployment, you can access that link directly.)_
+  [https://accelalpha-oracle-event-frontend.vercel.app/](https://accelalpha-oracle-event-frontend.vercel.app/) _(Note: If Vercel generated a unique project name like `accelalpha-oracle-event-web.vercel.app` upon deployment, you can access that link directly.)_
 - **Live Running Backend API (Render)**:
   [https://accelalpha-oracle-event.onrender.com](https://accelalpha-oracle-event.onrender.com)
-- **Generate Invitation Endpoint (RAG POST)**:
-  [https://accelalpha-oracle-event.onrender.com](https://accelalpha-oracle-event.onrender.com/api/v1/generate-invitation)
+- **REST API Documentation**:
+  [https://accelalpha-oracle-event.onrender.com/docs](https://accelalpha-oracle-event.onrender.com/docs)
 
 ---
 
