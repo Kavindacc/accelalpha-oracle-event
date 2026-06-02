@@ -10,16 +10,25 @@ export function Pullquote() {
 
       <div className="relative max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 p-8 md:p-16 text-center shadow-lg"
+          viewport={{ once: true, margin: "-100px" }}
+          whileHover={{
+            y: -8,
+            boxShadow: "0 25px 60px -15px oklch(0.68 0.21 32 / 0.12), 0 0 30px oklch(0.68 0.21 32 / 0.05)",
+            borderColor: "oklch(0.68 0.21 32 / 0.45)"
+          }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          className="relative rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 p-8 md:p-16 text-center shadow-lg cursor-default transition-colors duration-300"
         >
-          {/* Elegant floating quote badge */}
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 size-12 rounded-full bg-coral flex items-center justify-center text-white shadow-glow">
+          {/* Elegant floating quote badge with continuous breathing float animation */}
+          <motion.div 
+            animate={{ y: [0, -6, 0] }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+            className="absolute -top-6 left-1/2 -translate-x-1/2 size-12 rounded-full bg-coral flex items-center justify-center text-white shadow-glow"
+          >
             <Quote className="size-5 fill-current" />
-          </div>
+          </motion.div>
 
           <blockquote className="mt-4 font-display font-medium text-2xl md:text-4xl text-zinc-900 dark:text-zinc-100 leading-relaxed text-balance">
             “In an era of shifting global trade lanes, this summit is the definitive forum to operationalize <em className="text-coral not-italic font-semibold">cognitive SCM architectures</em>, anticipate shipping disruptions, and deploy <em className="text-coral not-italic font-semibold">sustainable logistics</em> across the Middle East.”

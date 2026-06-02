@@ -2,7 +2,6 @@
 import { motion } from "motion/react";
 import { LinkIcon } from "lucide-react";
 
-// Import real speaker images
 import speaker1 from "@/assets/speaker-1.png";
 import speaker2 from "@/assets/speaker-2.png";
 import speaker3 from "@/assets/speaker-3.png";
@@ -12,7 +11,6 @@ import speaker6 from "@/assets/speaker-6.png";
 import speaker7 from "@/assets/speaker-7.png";
 import speaker8 from "@/assets/speaker-8.png";
 
-// Real speaker profiles and session tags mapped from the source website
 const speakers = [
   {
     name: "Dr Raman Kumar",
@@ -95,7 +93,14 @@ export function Speakers() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 size-150 rounded-full bg-coral/5 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto">
-        <div className="flex items-end justify-between mb-20 flex-wrap gap-6">
+        {/* Scroll Reveal Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-end justify-between mb-20 flex-wrap gap-6"
+        >
           <div>
             <div className="flex items-center gap-3">
               <span className="h-px w-12 bg-coral" />
@@ -108,24 +113,37 @@ export function Speakers() {
           <p className="text-zinc-500 dark:text-zinc-400 max-w-sm text-sm">
             Operators, builders, and strategists shaping the next chapter of Gulf logistics and SCM automation.
           </p>
-        </div>
+        </motion.div>
 
+        {/* Staggered grid view */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {speakers.map((s, i) => (
             <motion.div
               key={s.name}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (i % 4) * 0.08 }}
-              className="group relative overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 p-4 hover:shadow-[0_20px_50px_rgba(206,42,41,0.08)] hover:-translate-y-1.5 hover:border-coral/35 transition-all duration-500 flex flex-col"
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: (i % 4) * 0.08, type: "spring", stiffness: 200, damping: 20 }}
+              whileHover="hover"
+              variants={{
+                hover: {
+                  y: -8,
+                  boxShadow: "0 22px 50px -12px oklch(0.68 0.21 32 / 0.12), 0 0 20px oklch(0.68 0.21 32 / 0.04)",
+                  borderColor: "oklch(0.68 0.21 32 / 0.4)"
+                }
+              }}
+              className="group relative overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 p-4 transition-all duration-300 flex flex-col cursor-pointer"
             >
               {/* Stylized Padded Portrait Frame */}
               <div className="aspect-[4/5] relative w-full rounded-2xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-850">
-                <img
+                <motion.img
+                  variants={{
+                    hover: { scale: 1.08, rotate: 1 }
+                  }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                   src={s.image.src}
                   alt={s.name}
-                  className="size-full object-cover object-center group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
+                  className="size-full object-cover object-center"
                 />
 
                 {/* Advanced Glassmorphic Slide-Up Session Panel */}
@@ -143,24 +161,40 @@ export function Speakers() {
                 </div>
 
                 {/* Glassmorphic LinkedIn Hover Action */}
-                <a
+                <motion.a
                   href="#"
-                  className="absolute top-3 right-3 size-9 rounded-full bg-white/85 dark:bg-zinc-900/85 backdrop-blur border border-zinc-200/40 dark:border-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-300 shadow-sm hover:bg-coral hover:text-white hover:border-coral z-10"
+                  variants={{
+                    hover: { opacity: 1, scale: 1 }
+                  }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-3 right-3 size-9 rounded-full bg-white/85 dark:bg-zinc-900/85 backdrop-blur border border-zinc-200/40 dark:border-zinc-800/80 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shadow-sm hover:bg-coral hover:text-white hover:border-coral z-10"
                   aria-label={`${s.name} LinkedIn Profile`}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <LinkIcon className="size-4" />
-                </a>
+                </motion.a>
               </div>
 
-              {/* Dedicated Typography and Affiliation Panel */}
+              {/* Typography and Affiliation Panel */}
               <div className="mt-5 px-1 flex-1 flex flex-col justify-between">
                 <div>
-                  <span className="inline-block text-[9px] uppercase tracking-widest text-coral font-bold bg-coral/5 border border-coral/15 px-2 py-0.5 rounded-md">
+                  <motion.span 
+                    variants={{
+                      hover: { scale: 1.03 }
+                    }}
+                    className="inline-block text-[9px] uppercase tracking-widest text-coral font-bold bg-coral/5 border border-coral/15 px-2 py-0.5 rounded-md"
+                  >
                     {s.company}
-                  </span>
-                  <h3 className="font-display text-lg font-semibold text-zinc-900 dark:text-white mt-3 group-hover:text-coral transition-colors leading-tight">
+                  </motion.span>
+                  <motion.h3 
+                    variants={{
+                      hover: { color: "var(--color-coral)" }
+                    }}
+                    className="font-display text-lg font-semibold text-zinc-900 dark:text-white mt-3 transition-colors leading-tight"
+                  >
                     {s.name}
-                  </h3>
+                  </motion.h3>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 leading-relaxed">
                   {s.role}

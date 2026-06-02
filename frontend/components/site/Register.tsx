@@ -86,8 +86,12 @@ export function Register() {
       </div>
 
       <div className="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+        {/* Left Column Description */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+          initial={{ opacity: 0, x: -30 }} 
+          whileInView={{ opacity: 1, x: 0 }} 
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.1 }}
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/15 bg-white/5 backdrop-blur text-xs uppercase tracking-[0.2em] text-white/80">
             <Sparkles className="size-3 text-coral" />
@@ -99,48 +103,101 @@ export function Register() {
           <p className="mt-8 text-white/70 text-lg leading-relaxed">
             Seating is limited and curated by the Accelalpha team. Tell us about your professional focus and our system will match you to our elite GCC schedule.
           </p>
-          <div className="mt-10 space-y-4 text-sm">
+          
+          {/* Staggered bullet reveals on scroll */}
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+              }
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="mt-10 space-y-4 text-sm"
+          >
             {[
               "Private 50-person executive setting",
               "Full agenda, working lunch & networking",
               "On-the-record briefing materials",
               "Direct introductions to fellow operators",
             ].map(p => (
-              <div key={p} className="flex items-center gap-3 text-white/90">
+              <motion.div 
+                key={p} 
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 120, damping: 15 } }
+                }}
+                className="flex items-center gap-3 text-white/90"
+              >
                 <span className="size-7 rounded-full bg-coral-gradient flex items-center justify-center text-coral-foreground shadow-glow shrink-0">
                   <Check className="size-3.5" />
                 </span>
                 <span>{p}</span>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
 
-        <motion.form
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          onSubmit={submit}
+        {/* Form Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.1 }}
           className="relative p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/15 shadow-deep"
         >
           {/* Gradient border accent */}
           <div className="absolute -top-px left-12 right-12 h-px bg-linear-to-r from-transparent via-coral to-transparent" />
 
           {done && response ? (
-            <div className="space-y-6">
+            /* Staggered form success feedback cards */
+            <motion.div 
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.12 }
+                }
+              }}
+              initial="hidden"
+              animate="visible"
+              className="space-y-6"
+            >
               <div className="text-center">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", bounce: 0.5 }}
+                  variants={{
+                    hidden: { scale: 0 },
+                    visible: { scale: 1, transition: { type: "spring", bounce: 0.45, duration: 0.5 } }
+                  }}
                   className="mx-auto size-16 rounded-full bg-coral-gradient flex items-center justify-center text-coral-foreground shadow-glow"
                 >
                   <Check className="size-8" />
                 </motion.div>
-                <h3 className="mt-4 font-display font-semibold text-3xl text-white">Anchor dropped.</h3>
-                <p className="mt-2 text-zinc-300 text-sm">We've matched your professional focus to the agenda!</p>
+                <motion.h3 
+                  variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                  className="mt-4 font-display font-semibold text-3xl text-white"
+                >
+                  Anchor dropped.
+                </motion.h3>
+                <motion.p 
+                  variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                  className="mt-2 text-zinc-300 text-sm"
+                >
+                  We've matched your professional focus to the agenda!
+                </motion.p>
               </div>
 
               {/* Matched Session Info Panel */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-2 text-left">
+              <motion.div 
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 150, damping: 15 } }
+                }}
+                className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-2 text-left"
+              >
                 <span className="text-[9px] uppercase tracking-widest text-coral font-bold bg-coral/10 border border-coral/20 px-2 py-0.5 rounded-md">
                   Matched Session
                 </span>
@@ -150,10 +207,16 @@ export function Register() {
                 <p className="text-[11px] text-zinc-400 leading-relaxed">
                   Based on your interest, this session has been highlighted for your GCC supply chain dashboard.
                 </p>
-              </div>
+              </motion.div>
 
               {/* Generated Email Draft */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3 text-left">
+              <motion.div 
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 150, damping: 15 } }
+                }}
+                className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3 text-left"
+              >
                 <div className="flex justify-between items-center">
                   <span className="text-[9px] uppercase tracking-widest text-zinc-400 font-bold">
                     AI-Drafted Invitation
@@ -172,14 +235,17 @@ export function Register() {
                 <div className="bg-zinc-950/60 rounded-xl p-3.5 border border-white/5 font-mono text-[10px] text-zinc-300 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed scrollbar-thin">
                   {response.email_body}
                 </div>
-              </div>
+              </motion.div>
 
-              <p className="text-center text-xs text-zinc-500">
+              <motion.p 
+                variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+                className="text-center text-xs text-zinc-500"
+              >
                 Invitation request logged at: {new Date(response.timestamp).toLocaleTimeString()}
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
           ) : (
-            <>
+            <form onSubmit={submit}>
               <div className="flex items-center justify-between mb-8">
                 <h3 className="font-display font-semibold text-3xl">Request invitation</h3>
                 <span className="text-xs uppercase tracking-widest text-white/40">01 / 01</span>
@@ -238,9 +304,9 @@ export function Register() {
               <p className="mt-4 text-center text-xs text-white/40">
                 We respond within 48 hours. No marketing list, ever.
               </p>
-            </>
+            </form>
           )}
-        </motion.form>
+        </motion.div>
       </div>
     </section>
   );

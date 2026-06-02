@@ -46,10 +46,18 @@ export function Agenda() {
 
   return (
     <section id="agenda" className="relative py-32 px-6 overflow-hidden scroll-mt-24 md:scroll-mt-28">
-      <div className="absolute -right-40 top-40 size-125 rounded-full bg-surf/10 blur-3xl pointer-events-none" />
+      {/* Dynamic background aura */}
+      <div className="absolute -right-40 top-40 size-125 rounded-full bg-surf/10 blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "8s" }} />
 
       <div className="relative max-w-5xl mx-auto">
-        <div className="flex items-end justify-between mb-16 flex-wrap gap-6">
+        {/* Scroll-triggered header entry */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-end justify-between mb-16 flex-wrap gap-6"
+        >
           <div>
             <div className="flex items-center gap-3">
               <span className="h-px w-12 bg-coral" />
@@ -60,17 +68,20 @@ export function Agenda() {
             </h2>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="size-4 text-coral" />
+            <MapPin className="size-4 text-coral animate-bounce" style={{ animationDuration: "2s" }} />
             Marriott Resort, The Palm · Dubai
           </div>
-        </div>
+        </motion.div>
 
+        {/* Filter buttons with click/hover micro-interactions */}
         <div className="flex flex-wrap gap-2 mb-12 p-1.5 rounded-full bg-muted/60 border border-border w-fit">
           {filters.map(f => (
-            <button
+            <motion.button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
                 filter === f.key ? "text-coral-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -78,11 +89,11 @@ export function Agenda() {
                 <motion.span
                   layoutId="agenda-pill"
                   className="absolute inset-0 bg-coral-gradient rounded-full shadow-glow"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                  transition={{ type: "spring", bounce: 0.18, duration: 0.6 }}
                 />
               )}
               <span className="relative">{f.label}</span>
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -96,32 +107,82 @@ export function Agenda() {
                 <motion.div
                   layout
                   key={s.time + s.title}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: i * 0.03 }}
-                  className="group relative flex items-start gap-6 md:gap-10"
+                  exit={{ opacity: 0, scale: 0.96, y: -10 }}
+                  whileHover="hover"
+                  transition={{
+                    type: "spring",
+                    stiffness: 280,
+                    damping: 24,
+                    opacity: { duration: 0.25 }
+                  }}
+                  className="group relative flex items-start gap-6 md:gap-10 cursor-pointer"
                 >
-                  <div className="font-display text-2xl md:text-3xl tabular-nums text-foreground/80 min-w-18 pt-4">
+                  {/* Time indicator - animated slide-right on hover */}
+                  <motion.div
+                    variants={{
+                      hover: { x: 5, color: "var(--color-coral)" }
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="font-display text-2xl md:text-3xl tabular-nums text-foreground/80 min-w-18 pt-4 transition-colors duration-200"
+                  >
                     {s.time}
+                  </motion.div>
+
+                  {/* Interactive Timeline dot with glowing aura */}
+                  <div className="hidden md:flex flex-col items-center pt-7 -mx-3 relative">
+                    <motion.div
+                      variants={{
+                        hover: {
+                          scale: 2.8,
+                          opacity: 0.18,
+                          transition: { repeat: Infinity, repeatType: "reverse", duration: 0.6 }
+                        }
+                      }}
+                      className={`absolute size-3 rounded-full ${trackDot[s.track]} opacity-0 pointer-events-none`}
+                    />
+                    <motion.div
+                      variants={{
+                        hover: { scale: 1.4 }
+                      }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                      className={`size-3 rounded-full ${trackDot[s.track]} ring-4 ring-background z-10`}
+                    />
                   </div>
 
-                  {/* Timeline dot */}
-                  <div className="hidden md:flex flex-col items-center pt-7 -mx-3">
-                    <div className={`size-3 rounded-full ${trackDot[s.track]} ring-4 ring-background`} />
-                  </div>
-
-                  <div className="flex-1 p-5 md:p-6 rounded-2xl bg-card border border-border hover:border-coral/40 hover:-translate-y-0.5 hover:shadow-deep transition-all">
+                  {/* Interactive Card with premium custom-colored shadows on hover */}
+                  <motion.div
+                    variants={{
+                      hover: {
+                        y: -6,
+                        boxShadow: s.track === "keynote"
+                          ? "0 20px 45px -12px oklch(0.68 0.21 32 / 0.16), 0 0 15px oklch(0.68 0.21 32 / 0.05)"
+                          : s.track === "panel"
+                          ? "0 20px 45px -12px oklch(0.7 0.12 200 / 0.16), 0 0 15px oklch(0.7 0.12 200 / 0.05)"
+                          : "0 20px 45px -12px oklch(0.22 0.06 245 / 0.16)",
+                        borderColor: s.track === "keynote"
+                          ? "oklch(0.68 0.21 32 / 0.45)"
+                          : s.track === "panel"
+                          ? "oklch(0.7 0.12 200 / 0.45)"
+                          : "oklch(0.22 0.06 245 / 0.35)"
+                      }
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    className="flex-1 p-5 md:p-6 rounded-2xl bg-card border border-border transition-colors duration-300 shadow-sm"
+                  >
                     <div className="flex items-center gap-3 flex-wrap">
                       <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
                         <span className={`size-1.5 rounded-full ${trackDot[s.track]}`} />
                         {trackLabel[s.track]}
                       </span>
                     </div>
-                    <h3 className="font-display text-xl md:text-2xl font-semibold mt-2 leading-snug">{s.title}</h3>
+                    <h3 className="font-display text-xl md:text-2xl font-semibold mt-2 leading-snug group-hover:text-foreground transition-colors">
+                      {s.title}
+                    </h3>
                     {s.speaker && <p className="text-sm text-coral mt-2 font-medium">{s.speaker}</p>}
                     {s.desc && <p className="text-sm text-muted-foreground mt-1">{s.desc}</p>}
-                  </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </AnimatePresence>

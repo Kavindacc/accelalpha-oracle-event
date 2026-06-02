@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import logoWhite from "@/assets/logo-white.png";
 import logoBlack from "@/assets/logo-black.png";
 import logoOracle from "@/assets/logo with oracle.png";
+import logoOracleBlack from "@/assets/logo with oracle-black.png";
 
 export function Nav() {
   const { theme, toggle } = useTheme();
@@ -28,39 +29,39 @@ export function Nav() {
           : "bg-white dark:bg-zinc-950/80 border-border/50 backdrop-blur-md py-4"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Double branding logo container */}
-        <div className="flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+        {/* Double branding logo container with fluid gap */}
+        <div className="flex items-center gap-2 sm:gap-4">
           <a href="#top" className="hover:opacity-90 transition-opacity">
             <img
-              src={theme === "dark" ? logoWhite.src : logoBlack.src}
+              src={theme === "dark" ? logoBlack.src : logoBlack.src}
               alt="Accelalpha Logo"
-              className="h-10 md:h-11 w-auto object-contain"
+              className="h-8 sm:h-10 md:h-11 w-auto object-contain"
             />
           </a>
-          <div className="h-6 w-px bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-5 sm:h-6 w-px bg-zinc-200 dark:bg-zinc-800" />
           <img
-            src={logoOracle.src}
+            src={theme === "dark" ? logoOracleBlack.src : logoOracle.src}
             alt="Oracle Partner"
-            className="h-9 md:h-10 w-auto object-contain"
+            className={`${theme === "dark" ? "h-6 sm:h-7 md:h-8" : "h-7 sm:h-9 md:h-10"} w-auto object-contain`}
           />
         </div>
 
-        {/* Right side controls */}
-        <div className="flex items-center gap-3">
+        {/* Right side controls with fluid gap */}
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Theme toggler */}
           <button
             onClick={toggle}
             aria-label="Toggle theme"
-            className="size-9 rounded-full border border-border flex items-center justify-center hover:bg-accent text-foreground hover:text-foreground transition-colors cursor-pointer"
+            className="size-7.5 sm:size-9 ml-2 sm:ml-0 rounded-full border border-border flex items-center justify-center hover:bg-accent text-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
           >
-            {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            {theme === "dark" ? <Sun className="size-3.5 sm:size-4" /> : <Moon className="size-3.5 sm:size-4" />}
           </button>
 
-          {/* Call to action button */}
+          {/* Call to action button in single line */}
           <a
             href="#register"
-            className="inline-flex items-center px-6 h-10 rounded-full bg-coral-gradient text-coral-foreground text-sm font-semibold shadow-glow hover:scale-[1.03] transition-transform duration-200"
+            className="inline-flex items-center justify-center whitespace-nowrap px-4 sm:px-6 h-10 rounded-full bg-coral-gradient text-coral-foreground text-xs sm:text-sm font-semibold shadow-glow hover:scale-[1.03] transition-transform duration-200 shrink-0"
           >
             Reserve Seat
           </a>

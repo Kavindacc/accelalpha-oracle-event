@@ -1,11 +1,40 @@
 "use client";
-import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
+import { motion, useInView, useMotionValue, useSpring } from "motion/react";
 import { Anchor, Compass, Waves } from "lucide-react";
 
+// Physics-driven animated counter ticker
+function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionValue = useMotionValue(0);
+  const springValue = useSpring(motionValue, {
+    damping: 30,
+    stiffness: 80,
+  });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (isInView) {
+      motionValue.set(value);
+    }
+  }, [motionValue, value, isInView]);
+
+  useEffect(() => {
+    return springValue.on("change", (latest) => {
+      if (ref.current) {
+        const formatted = String(Math.floor(latest)).padStart(value < 10 ? 2 : 1, "0");
+        ref.current.textContent = formatted + suffix;
+      }
+    });
+  }, [springValue, value, suffix]);
+
+  return <span ref={ref} className="font-semibold text-foreground">00{suffix}</span>;
+}
+
 const stats = [
-  { n: "50+", l: "Executive attendees", icon: Anchor },
-  { n: "08", l: "Industry speakers", icon: Compass },
-  { n: "01", l: "Day of momentum", icon: Waves },
+  { val: 50, suf: "+", l: "Executive attendees", icon: Anchor },
+  { val: 8, suf: "", l: "Industry speakers", icon: Compass },
+  { val: 1, suf: "", l: "Day of momentum", icon: Waves },
 ];
 
 export function About() {
@@ -24,15 +53,17 @@ export function About() {
       </div>
 
       {/* Floating coral orb */}
-      <div className="absolute -top-20 right-10 size-96 rounded-full bg-coral/20 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 -left-20 size-80 rounded-full bg-surf/20 blur-3xl pointer-events-none" />
+      <div className="absolute -top-20 right-10 size-96 rounded-full bg-coral/20 blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "12s" }} />
+      <div className="absolute bottom-0 -left-20 size-80 rounded-full bg-surf/20 blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "10s", animationDelay: "1s" }} />
 
       <div className="relative max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-12 items-start">
+          {/* Scroll-triggered left column */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.1 }}
             className="lg:col-span-5 lg:sticky lg:top-24"
           >
             <div className="flex items-center gap-3">
@@ -44,11 +75,12 @@ export function About() {
             </h2>
           </motion.div>
 
+          {/* Scroll-triggered right column */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ delay: 0.15, duration: 0.8, type: "spring", bounce: 0.1 }}
             className="lg:col-span-7 space-y-8"
           >
             <p className="text-xl text-foreground/80 leading-relaxed font-normal text-balance">
@@ -58,6 +90,7 @@ export function About() {
               This invitation-only summit convenes 50+ regional leaders for a day of frank conversation, working sessions, and a clear-eyed look at what comes next.
             </p>
 
+            {/* Statistics grid with sequential counter timers */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-border">
               {stats.map((s, i) => (
                 <motion.div
@@ -65,11 +98,22 @@ export function About() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  className="group"
+                  transition={{ delay: 0.3 + i * 0.12 }}
+                  whileHover="hover"
+                  className="group cursor-default"
                 >
-                  <s.icon className="size-5 text-coral mb-3 group-hover:scale-110 transition-transform" />
-                  <div className="font-display text-5xl text-foreground tabular-nums">{s.n}</div>
+                  <motion.div
+                    variants={{
+                      hover: { scale: 1.15, color: "var(--color-coral)" }
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                    className="text-coral mb-3 w-fit"
+                  >
+                    <s.icon className="size-5" />
+                  </motion.div>
+                  <div className="font-display text-5xl text-foreground tabular-nums">
+                    <AnimatedCounter value={s.val} suffix={s.suf} />
+                  </div>
                   <div className="text-xs uppercase tracking-widest text-muted-foreground mt-2">{s.l}</div>
                 </motion.div>
               ))}
