@@ -1,6 +1,6 @@
 # Technical Assessment Report: Full-Stack Event Invitation System
 
-This repository hosts a state-of-the-art, fully responsive corporate event platform designed for **Cogent Solutions**, co-organized by **Accelalpha & Oracle**. It combines a premium React/Next.js frontend in a Turborepo workspace and a robust FastAPI backend featuring a custom Retrieval-Augmented Generation (RAG) SCM schedule matching pipeline.
+This repository hosts a state-of-the-art, fully responsive corporate event platform designed for **Kavinda Chadrasiri**, co-organized by **Accelalpha & Oracle**. It combines a premium React/Next.js frontend in a Turborepo workspace and a robust FastAPI backend featuring a custom Retrieval-Augmented Generation (RAG) SCM schedule matching pipeline.
 
 ---
 

@@ -8,7 +8,7 @@ export function Footer() {
         {/* Column 1: Brand & Description */}
         <div className="space-y-4">
           <div className="font-display text-2xl font-bold text-white tracking-tight">
-            Cogent Solutions™
+            Kavinda Chadrasiri™
           </div>
           <p className="text-xs leading-relaxed text-zinc-400 max-w-sm">
             Through our conferences we transform your business challenges into opportunities. Our clients and customers are leading government entities and Fortune 500 companies.
@@ -63,8 +63,8 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2.5 pt-1">
               <Mail className="size-4 text-coral shrink-0" />
-              <a href="mailto:partnerships@cogentsolutions.ae" className="hover:text-white transition-colors break-all">
-                partnerships@cogentsolutions.ae
+              <a href="mailto:kavindacc@gmai.com" className="hover:text-white transition-colors break-all">
+                kavindacc@gmail.com
               </a>
             </li>
           </ul>
@@ -92,14 +92,14 @@ export function Footer() {
       {/* Footer Bottom Block */}
       <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-zinc-500">
         <span>
-          © 2026 Cogent Solutions Event Management LLC. All Rights Reserved.
+          © 2026 Kavinda Chadrasiri. All Rights Reserved.
         </span>
 
         {/* Social Network Node Links - Compiler-Safe Inline SVGs */}
         <div className="flex items-center gap-2.5">
           {[
             {
-              href: "https://www.linkedin.com/company/cogent-solutions-event-management/mycompany/",
+              href: "https://www.linkedin.com/in/kavinda-chandrasiri/",
               label: "LinkedIn",
               svg: (
                 <svg className="size-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -117,7 +117,7 @@ export function Footer() {
               ),
             },
             {
-              href: "https://www.instagram.com/cogent_solutions/",
+              href: "https://www.instagram.com/kavinda__chamod/",
               label: "Instagram",
               svg: (
                 <svg className="size-4 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
